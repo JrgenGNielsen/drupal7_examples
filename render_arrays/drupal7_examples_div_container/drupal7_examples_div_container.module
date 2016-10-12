@@ -1,0 +1,79 @@
+<?php
+
+/*
+ * http://drupal.stackexchange.com/questions/16831/how-do-i-wrap-two-render-array-elements-in-a-div
+ * See also:
+ * https://www.drupal.org/docs/7/creating-custom-modules/using-the-theme-layer-drupal-7x
+ */
+
+/**
+ * Implements hook_menu();
+ */
+function drupal7_examples_div_container_menu() {
+  $items['drupal7_examples_div_container'] = array(
+    'title' => 'Example',
+    'description' => 'div container render array example',
+    'page callback' => 'drupal7_examples_div_container_page',
+    'access arguments' => array('access content'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * Construct the example page
+ */
+function drupal7_examples_div_container_page() {
+  $render_array = drupal7_examples_div_container_render_array();
+  return drupal_render($render_array);
+}
+
+
+function drupal7_examples_div_container_theme() {
+  return array(
+    'div_container' => array(
+      // if the 'template' key is omitted, theme hook's default implementation 
+	  // would be assumed to be a function named 'theme_div_container'. 
+	  'template' => 'templates/drupal7-examples-div-container-template',
+      'variables' => array(
+	    'fee' => NULL,
+	  ),
+    ),
+  );
+} 
+
+
+function theme_div_container($variables) {
+  return 'theme function:<br>' . drupal_render_children($variables);
+}
+
+
+function drupal7_examples_div_container_render_array() {
+  $wrapper = array(
+    '#theme' => 'div_container',
+	'#type' => 'container',
+    '#attributes' => array(
+      'class' => array('class-name'),
+    ),
+  );
+  $wrapper['#fee']['foo'] = array(
+    '#theme' => 'html_tag',
+    '#tag' => 'h3',
+    '#value' => 'How do I wrap two render array elements in a div?'
+  );
+  $wrapper['#fee']['fum'] = array(
+    '#type'  => 'link',
+    '#title' => t('Read more'),
+    '#href'  =>  'http://drupal.stackexchange.com/questions/16831/how-do-i-wrap-two-render-array-elements-in-a-div',
+    '#options' => array(
+      'attributes' => array(
+        'title' => 'fum title',
+      ),
+    ),
+    '#prefix' => '<p>',
+    '#suffix' => '</p>'
+  );
+  return $wrapper;
+}
+
+ 
