@@ -34,7 +34,7 @@ function drupal7_examples_div_container_theme() {
     'div_container' => array(
       // if the 'template' key is omitted, theme hook's default implementation 
 	  // would be assumed to be a function named 'theme_div_container'. 
-	  'template' => 'templates/drupal7-examples-div-container-template',
+	  // 'template' => 'templates/drupal7-examples-div-container-template',
       'variables' => array(
 	    'fee' => NULL,
 	  ),
@@ -44,24 +44,27 @@ function drupal7_examples_div_container_theme() {
 
 
 function theme_div_container($variables) {
-  return 'theme function:<br>' . drupal_render_children($variables);
+  dpm($variables);
+  return 'Using theme function:<br>' . drupal_render_children($variables);
 }
 
 
 function drupal7_examples_div_container_render_array() {
   $wrapper = array(
     '#theme' => 'div_container',
+  );
+  $wrapper['#fee']['fie'] = array(
 	'#type' => 'container',
     '#attributes' => array(
       'class' => array('class-name'),
     ),
   );
-  $wrapper['#fee']['foo'] = array(
+  $wrapper['#fee']['fie']['foo'] = array(
     '#theme' => 'html_tag',
     '#tag' => 'h3',
     '#value' => 'How do I wrap two render array elements in a div?'
   );
-  $wrapper['#fee']['fum'] = array(
+  $wrapper['#fee']['fie']['fum'] = array(
     '#type'  => 'link',
     '#title' => t('Read more'),
     '#href'  =>  'http://drupal.stackexchange.com/questions/16831/how-do-i-wrap-two-render-array-elements-in-a-div',
