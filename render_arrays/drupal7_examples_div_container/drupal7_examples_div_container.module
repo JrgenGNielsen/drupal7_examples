@@ -25,7 +25,7 @@ function drupal7_examples_div_container_menu() {
  */
 function drupal7_examples_div_container_page() {
   $render_array = drupal7_examples_div_container_render_array();
-  return drupal_render($render_array);
+  return $render_array;
 }
 
 
@@ -33,8 +33,9 @@ function drupal7_examples_div_container_theme() {
   return array(
     'div_container' => array(
       // if the 'template' key is omitted, theme hook's default implementation 
-	  // would be assumed to be a function named 'theme_div_container'. 
-	  // 'template' => 'templates/drupal7-examples-div-container-template',
+	    // would be assumed to be a function named 'theme_div_container'. 
+      // Uncomment key below to test template.
+	    // 'template' => 'templates/drupal7-examples-div-container-template',
       'variables' => array(
 	    'fee' => NULL,
 	  ),
@@ -44,39 +45,68 @@ function drupal7_examples_div_container_theme() {
 
 
 function theme_div_container($variables) {
-  dpm($variables);
-  return 'Using theme function:<br>' . drupal_render_children($variables);
+  return '<h2>Using theme function:</h2>' . drupal_render_children($variables);
 }
 
 
 function drupal7_examples_div_container_render_array() {
-  $wrapper = array(
+
+  $img = array(
+    '#theme' => 'image',
+    '#path' => drupal_get_path('module', 'drupal7_examples_div_container') . '/blue-down.png',
+    '#alt' => 'Image Alt text',
+    '#title' => 'Image Title',
+  );
+
+  $render = array(
     '#theme' => 'div_container',
   );
-  $wrapper['#fee']['fie'] = array(
+
+  $render['#fee']['fie'] = array(
 	'#type' => 'container',
     '#attributes' => array(
       'class' => array('class-name'),
     ),
   );
-  $wrapper['#fee']['fie']['foo'] = array(
+
+  $render['#fee']['fie']['foo'] = array(
     '#theme' => 'html_tag',
-    '#tag' => 'h3',
+    '#tag' => 'p',
     '#value' => 'How do I wrap two render array elements in a div?'
   );
-  $wrapper['#fee']['fie']['fum'] = array(
+
+  // Apparently it's better to use '#type' => 'link' as otherwise some l() preprocessing gets missed.
+  // See: https://www.drupal.org/node/1187032#comment-4711898
+  // Note the keys differ depending on the method.
+
+  $render['#fee']['fie']['fum'] = array(
     '#type'  => 'link',
-    '#title' => t('Read more'),
+    '#title' => '#type=link example, with image ' . drupal_render($img),
     '#href'  =>  'http://drupal.stackexchange.com/questions/16831/how-do-i-wrap-two-render-array-elements-in-a-div',
     '#options' => array(
       'attributes' => array(
         'title' => 'fum title',
       ),
+      'html' => TRUE,
     ),
     '#prefix' => '<p>',
     '#suffix' => '</p>'
   );
-  return $wrapper;
+  
+ 
+  $render['#fee']['fie']['fut'] = array(
+    '#theme' => 'link',
+    '#text' => '#theme=link example',
+    '#path' => "fut",
+    '#options' => array(
+      'attributes' => array(),
+      'html' => TRUE,
+    ),
+    '#prefix' => '<p>',
+    '#suffix' => '</p>'
+  );
+  
+  return $render;
 }
 
  
